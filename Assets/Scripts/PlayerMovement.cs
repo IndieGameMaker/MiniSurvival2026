@@ -8,8 +8,15 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField, Min(0f)] private float moveSpeed = 5f;
 
+
     private Rigidbody2D playerRigidbody;
     private InputAction moveAction;
+
+    [SerializeField] private Animator _animator;
+    private void Start()
+    {
+        _animator = GetComponent<Animator>();
+    }
 
     private void Awake()
     {
@@ -17,6 +24,21 @@ public class PlayerMovement : MonoBehaviour
 
         PlayerInput playerInput = GetComponent<PlayerInput>();
         moveAction = playerInput.actions.FindAction("Move", true);
+    }
+
+    private void Update()
+    {
+        Vector2 moveInput = Vector2.ClampMagnitude(
+            moveAction.ReadValue<Vector2>(), 1f);
+
+        if (moveInput != Vector2.zero)
+        {
+            _animator.SetBool("IsRun", true);
+        }
+        else
+        {
+            _animator.SetBool("IsRun", false);
+        }
     }
 
     private void FixedUpdate()
